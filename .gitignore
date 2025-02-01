@@ -1,0 +1,7 @@
+﻿/.vs
+/venv
+/build
+__pycache__/
+imgdescgenlib.egg-info/
+/TestResults
+*.jpg
