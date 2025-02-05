@@ -1,9 +1,7 @@
 import requests
 
 from imgdescgenlib.chatbot.base import ChatbotBase
-
-class ChatbotRequestFailed(Exception):
-    pass
+from imgdescgenlib.chatbot.exceptions import ChatbotHttpRequestFailed, ChatbotPayloadTooLarge
 
 class ChatbotClientBase(ChatbotBase):
     """
@@ -17,4 +15,8 @@ class ChatbotClientBase(ChatbotBase):
         Checks if response status is success and raises exception if failed
         """
         if response.status_code != 200:
-            raise ChatbotRequestFailed
+            if response.status_code == 413:
+                # probably image too large
+                raise ChatbotPayloadTooLarge(response.status_code)
+
+            raise ChatbotHttpRequestFailed(response.status_code)
