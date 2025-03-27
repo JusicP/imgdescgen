@@ -1,5 +1,5 @@
 from imgdescgenlib.chatbot.base import ChatbotBase
-from imgdescgenlib.image import Image
+from imgdescgenlib.images import Images
 
 class ImgDescGen():
     """
@@ -8,16 +8,16 @@ class ImgDescGen():
     def __init__(self, chatbot: ChatbotBase):
         self._chatbot = chatbot
 
-    def generate_image_description(self, img_path: str, save_to_disk = True):
+    def generate_image_description(self, img_paths: list[str], save_to_disk = True):
         """
         Loads image from file and sends request to the chatbot.
         Then writes metadata to image and dumps it to disk.
         """
-        img = Image(img_path)
+        imgs = Images(img_paths)
 
-        img_metadata = self._chatbot.generate_image_description(img.encode_base64())
+        img_metadata = self._chatbot.generate_image_description(imgs.encode_base64())
 
         if save_to_disk == True:
-            img.write_description_metadata(img_metadata)
+            imgs.write_description_metadata(img_metadata)
 
         return img_metadata

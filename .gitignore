@@ -5,3 +5,4 @@ __pycache__/
 imgdescgenlib.egg-info/
 /TestResults
 *.jpg
+/main.py

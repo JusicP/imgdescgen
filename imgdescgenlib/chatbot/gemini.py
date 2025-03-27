@@ -20,10 +20,10 @@ class GeminiClient(ChatbotClientBase):
         """
         return json.loads(response_json["candidates"][0]["content"]["parts"][0]["text"])
 
-    def generate_image_description(self, img_base64: str) -> dict:
+    def generate_image_description(self, imgs_base64: list[str]) -> dict:
         """
         Sends generateContent request to Gemini to generate JSON object that contains image metadata: general description and list of keywords 
-        Accepts base64 encoded jpeg image.
+        Accepts list of base64 encoded jpeg images or single object.
         """
 
         headers = {
@@ -34,20 +34,24 @@ class GeminiClient(ChatbotClientBase):
             "contents": [{
                 "parts": [
                     {
-                        "text": 'Write a detailed description and key words of the image, with this schema: {"description": str, "keywords": list[str]}"}.'
+                        "text": 'Write a detailed description and key words of the each image, with this JSON schema: Image = {"description": str, "keywords": list[str]} Return: list[Image]"}.'
                     },
-                    {
-                        "inlineData": {
-                            "mimeType": "image/jpeg",
-                            "data": img_base64
-                        }
-                    }
                 ]
             }],
             "generationConfig": {
                 "response_mime_type": "application/json", # specify json response to get just json string without markdown
             }
         }
+
+        for img_base64 in imgs_base64:
+            payload["contents"][0]["parts"].append(
+                {
+                    "inlineData": {
+                        "mimeType": "image/jpeg",
+                        "data": img_base64
+                    }
+                }
+            )
 
         response = self.session.post(f"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key={self._api_key}", headers=headers, json=payload)
         self._check_response(response)

@@ -31,6 +31,6 @@ def test_write_description_metadata():
         img.write_description_metadata(metadata)
 
         new_img = Image(new_img_path)
-        tags = new_img.read_description_metadata()
+        tags = new_img.read_metadata()
 
         assert tags[0]["EXIF:ImageDescription"] == metadata["description"]

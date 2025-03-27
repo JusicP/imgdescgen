@@ -17,6 +17,6 @@ class ChatbotClientBase(ChatbotBase):
         if response.status_code != 200:
             if response.status_code == 413:
                 # probably image too large
-                raise ChatbotPayloadTooLarge(response.status_code)
+                raise ChatbotPayloadTooLarge(response.status_code, response.text)
 
-            raise ChatbotHttpRequestFailed(response.status_code)
+            raise ChatbotHttpRequestFailed(response.status_code, response.text)

@@ -9,17 +9,19 @@ class Image:
     PROCESSED_IMAGES_DIR = 'processed_images'
 
     def __init__(self, img_path, processed_img_path = PROCESSED_IMAGES_DIR):
-        self._img_path = img_path
-        self._img_bytes = self._load(img_path)
+        self._load(img_path)
+
         self._processed_img_path = processed_img_path
 
     def _load(self, img_path):
         """
         Loads image from file
-        Returns image bytes.
         """
         with open(img_path, "rb") as f:
-            return f.read()
+            self._img_path = img_path
+
+            self._img_bytes = f.read()
+            self._img_size = len(self._img_bytes)
 
     def encode_base64(self):
         """
@@ -28,9 +30,9 @@ class Image:
         """
         return base64.b64encode(self._img_bytes).decode('utf-8')
 
-    def read_description_metadata(self) -> dict | None:
+    def read_metadata(self) -> dict | None:
         """
-        Reads image description
+        Reads image metadata
         """
         with exiftool.ExifToolHelper() as et:
             return et.get_tags(
