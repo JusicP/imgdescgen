@@ -17,7 +17,7 @@ def create_temp_image(index: int, directory: str) -> str:
 
     return temp_img_path
 
-def test_write_description_metadata():
+def test_image_metadata_rw():
     # create 2 images
     img_count = 2
 

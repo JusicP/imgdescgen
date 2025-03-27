@@ -14,7 +14,7 @@ def create_temp_image(directory: str) -> str:
     img.save(temp_img_path)
     return temp_img_path
 
-def test_write_description_metadata():
+def test_image_metadata_rw():
     with tempfile.TemporaryDirectory() as tempdir:
         metadata = {
             "description": "test description",
