@@ -41,3 +41,31 @@ def test_image_metadata_rw():
 
         for i in range(img_count):
             assert tags[i]["EXIF:ImageDescription"] == metadata[i]["description"]
+
+def test_image_metadata_rw_different_directories():
+    # create 2 images
+    img_count = 2
+
+    with tempfile.TemporaryDirectory() as tempdir:
+        img_paths = []
+        new_imgs_path = []
+        metadata = []
+        for i in range(img_count):
+            dir = f"{tempdir}/{i}"
+            os.makedirs(dir)
+
+            img_paths.append(create_temp_image(i, dir))
+            new_imgs_path.append(os.path.join(tempdir, Image.PROCESSED_IMAGES_DIR, os.path.basename(img_paths[i])))
+
+            metadata.append(
+                { "description": f"test_{i}" }
+            )
+
+        imgs = Images(img_paths, os.path.join(tempdir, Image.PROCESSED_IMAGES_DIR))
+        imgs.write_description_metadata(metadata)
+
+        new_imgs = Images(new_imgs_path)
+        tags = new_imgs.read_metadata()
+
+        for i in range(img_count):
+            assert tags[i]["EXIF:ImageDescription"] == metadata[i]["description"]

@@ -34,3 +34,14 @@ def test_image_metadata_rw():
         tags = new_img.read_metadata()
 
         assert tags[0]["EXIF:ImageDescription"] == metadata["description"]
+
+def test_image_reduce_quality():
+    with tempfile.TemporaryDirectory() as tempdir:
+        img_path = create_temp_image(tempdir)
+        img = Image(img_path)
+
+        original_size = img.size()
+        img.reduce_quality()
+        reduced_size = img.size()
+
+        assert reduced_size < original_size
