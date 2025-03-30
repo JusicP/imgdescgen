@@ -8,10 +8,18 @@ class ImgDescGen():
     def __init__(self, chatbot: ChatbotBase):
         self._chatbot = chatbot
 
-    def generate_image_description(self, img_paths: list[str], output_dir: str = None, reduce_quality = True):
+    def generate_image_description(self, img_paths: list[str], output_dir: str = None, reduce_quality: bool = True):
         """
         Loads image from file and sends request to the chatbot.
         Then writes metadata to image and dumps it to disk.
+
+        Args:
+            img_paths (list[str]): List of images path.
+            output_dir (str): Output directory for updated images.
+            reduce_quality (bool): Reduce quality of all images.
+
+        Returns:
+            dict: Dictionary containing metadata for each image.
         """
         imgs = Images(img_paths, output_dir)
 
