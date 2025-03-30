@@ -5,15 +5,16 @@ import PIL.Image
 
 from io import BytesIO
 
+from imgdescgenlib.exceptions import ImageToolException
+
 class Image:
     """
     Encapsulation of image.
     """
-    PROCESSED_IMAGES_DIR = 'processed_images'
-
-    def __init__(self, img_path: str, processed_img_path: str = PROCESSED_IMAGES_DIR):
+    
+    def __init__(self, img_path: str, output_path: str):
         self._load(img_path)
-        self._processed_img_path = processed_img_path
+        self._output_path = output_path
 
         self._quality = "keep"
 
@@ -57,23 +58,29 @@ class Image:
         """
         Reads image metadata
         """
-        with exiftool.ExifToolHelper() as et:
-            return et.get_tags(
-                self._img_path,
-                None
-            )
-
+        try:
+            with exiftool.ExifToolHelper() as et:
+                return et.get_tags(
+                    self._img_path,
+                    None
+                )
+        except exiftool.exceptions.ExifToolException:
+            raise ImageToolException
+    
     def write_description_metadata(self, img_metadata: dict):
         """
         Writes image description
         """
         # create directory for processed images if not exists
-        os.makedirs(self._processed_img_path, exist_ok=True)
+        os.makedirs(self._output_path, exist_ok=True)
         
         # write image with modded metadata
-        with exiftool.ExifToolHelper() as et:
-            et.set_tags(
-                self._img_path,
-                {"ImageDescription": img_metadata["description"]},
-                ["-o", f'{self._processed_img_path}/{os.path.basename(self._img_path)}']
-            )
+        try:
+            with exiftool.ExifToolHelper() as et:
+                et.set_tags(
+                    self._img_path,
+                    {"ImageDescription": img_metadata["description"]},
+                    ["-o", f'{self._output_path}/{os.path.basename(self._img_path)}']
+                )
+        except exiftool.exceptions.ExifToolException:
+            raise ImageToolException

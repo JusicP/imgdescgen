@@ -5,6 +5,8 @@ import PIL.Image
 from imgdescgenlib.images import Images
 from imgdescgenlib.image import Image
 
+PROCESSED_IMAGES_DIR = 'processed_images'
+
 def create_temp_image(index: int, directory: str) -> str:
 
     img_filename = f"temp_image_{index}.jpg"
@@ -27,13 +29,13 @@ def test_image_metadata_rw():
         metadata = []
         for i in range(img_count):
             img_paths.append(create_temp_image(i, tempdir))
-            new_imgs_path.append(os.path.join(tempdir, Image.PROCESSED_IMAGES_DIR, os.path.basename(img_paths[i])))
+            new_imgs_path.append(os.path.join(tempdir, PROCESSED_IMAGES_DIR, os.path.basename(img_paths[i])))
 
             metadata.append(
                 { "description": f"test_{i}" }
             )
 
-        imgs = Images(img_paths, os.path.join(tempdir, Image.PROCESSED_IMAGES_DIR))
+        imgs = Images(img_paths, os.path.join(tempdir, PROCESSED_IMAGES_DIR))
         imgs.write_description_metadata(metadata)
 
         new_imgs = Images(new_imgs_path)
@@ -55,13 +57,13 @@ def test_image_metadata_rw_different_directories():
             os.makedirs(dir)
 
             img_paths.append(create_temp_image(i, dir))
-            new_imgs_path.append(os.path.join(tempdir, Image.PROCESSED_IMAGES_DIR, os.path.basename(img_paths[i])))
+            new_imgs_path.append(os.path.join(tempdir, PROCESSED_IMAGES_DIR, os.path.basename(img_paths[i])))
 
             metadata.append(
                 { "description": f"test_{i}" }
             )
 
-        imgs = Images(img_paths, os.path.join(tempdir, Image.PROCESSED_IMAGES_DIR))
+        imgs = Images(img_paths, os.path.join(tempdir, PROCESSED_IMAGES_DIR))
         imgs.write_description_metadata(metadata)
 
         new_imgs = Images(new_imgs_path)

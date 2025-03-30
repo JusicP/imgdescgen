@@ -4,6 +4,8 @@ import PIL.Image
 
 from imgdescgenlib.image import Image
 
+PROCESSED_IMAGES_DIR = 'processed_images'
+
 def create_temp_image(directory: str) -> str:
     img_filename = "temp_image.jpg"
     img = PIL.Image.new('RGB',
@@ -25,9 +27,9 @@ def test_image_metadata_rw():
         }
 
         img_path = create_temp_image(tempdir)
-        new_img_path = os.path.join(tempdir, Image.PROCESSED_IMAGES_DIR, os.path.basename(img_path))
+        new_img_path = os.path.join(tempdir, PROCESSED_IMAGES_DIR, os.path.basename(img_path))
 
-        img = Image(img_path, os.path.join(tempdir, Image.PROCESSED_IMAGES_DIR))
+        img = Image(img_path, os.path.join(tempdir, PROCESSED_IMAGES_DIR))
         img.write_description_metadata(metadata)
 
         new_img = Image(new_img_path)
