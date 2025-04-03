@@ -11,9 +11,8 @@ class Images:
     Manager for multiple Image instances; container for images
     """
 
-    def __init__(self, imgs_path: list[str], output_path: str):
+    def __init__(self, imgs_path: list[str]):
         self._common_dir: str = None
-        self._output_path = output_path
 
         # temp dir for storing metadata.csv with/without images
         self._tmpdir = tempfile.TemporaryDirectory()
@@ -33,7 +32,7 @@ class Images:
             elif img_dir != os.path.dirname(img_path) and different_dirs == False:
                 different_dirs = True
 
-            self._images.append(Image(img_path, self._output_path))
+            self._images.append(Image(img_path))
 
         if different_dirs == False:
             # set a _common_dir to not to copy all images to temp directory if they are in the same
@@ -76,22 +75,18 @@ class Images:
         except exiftool.exceptions.ExifToolException:
             raise ImageToolException
 
-    def write_description_metadata(self, img_metadata: list[dict]):
+    def write_description_metadata(self, img_metadata: list[dict], output_path: str):
         """
         Writes image description
         Notes:
             - If images are not in the same directory, they will all be saved to the temp directory
-            - If output_path is None, nothing will be written
         """
-
-        if self._output_path == None:
-            return
 
         if self._common_dir == None:
             self._save()
 
         # create directory for processed images if not exists
-        os.makedirs(self._output_path, exist_ok=True)
+        os.makedirs(output_path, exist_ok=True)
         
         # create temp csv file with filename and metadata
         with open(f'{self._tmpdir.name}/metadata.csv', 'w', newline='') as csvfile:
@@ -111,7 +106,7 @@ class Images:
             with exiftool.ExifToolHelper() as et:
                 et.execute(
                     f'-csv={self._tmpdir.name}/metadata.csv',
-                    '-o', self._output_path,
+                    '-o', output_path,
                     '-overwrite_original',
                     self._common_dir if self._common_dir else self._tmpdir.name
                 )

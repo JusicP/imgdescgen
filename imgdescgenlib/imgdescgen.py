@@ -21,7 +21,7 @@ class ImgDescGen():
         Returns:
             dict: Dictionary containing metadata for each image.
         """
-        imgs = Images(img_paths, output_dir)
+        imgs = Images(img_paths)
 
         if reduce_quality:
             imgs.reduce_quality()
@@ -29,6 +29,6 @@ class ImgDescGen():
         img_metadata = self._chatbot.generate_image_description(imgs.encode_base64())
 
         if output_dir:
-            imgs.write_description_metadata(img_metadata)
+            imgs.write_description_metadata(img_metadata, output_dir)
 
         return img_metadata

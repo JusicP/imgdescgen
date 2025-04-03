@@ -35,8 +35,8 @@ def test_image_metadata_rw():
                 { "description": f"test_{i}" }
             )
 
-        imgs = Images(img_paths, os.path.join(tempdir, PROCESSED_IMAGES_DIR))
-        imgs.write_description_metadata(metadata)
+        imgs = Images(img_paths)
+        imgs.write_description_metadata(metadata, os.path.join(tempdir, PROCESSED_IMAGES_DIR))
 
         new_imgs = Images(new_imgs_path)
         tags = new_imgs.read_metadata()
@@ -63,8 +63,8 @@ def test_image_metadata_rw_different_directories():
                 { "description": f"test_{i}" }
             )
 
-        imgs = Images(img_paths, os.path.join(tempdir, PROCESSED_IMAGES_DIR))
-        imgs.write_description_metadata(metadata)
+        imgs = Images(img_paths)
+        imgs.write_description_metadata(metadata, os.path.join(tempdir, PROCESSED_IMAGES_DIR))
 
         new_imgs = Images(new_imgs_path)
         tags = new_imgs.read_metadata()

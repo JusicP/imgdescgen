@@ -12,9 +12,8 @@ class Image:
     Encapsulation of image.
     """
     
-    def __init__(self, img_path: str, output_path: str):
+    def __init__(self, img_path: str):
         self._load(img_path)
-        self._output_path = output_path
 
         self._quality = "keep"
 
@@ -67,15 +66,13 @@ class Image:
         except exiftool.exceptions.ExifToolException:
             raise ImageToolException
     
-    def write_description_metadata(self, img_metadata: dict):
+    def write_description_metadata(self, img_metadata: dict, output_path: str):
         """
         Writes image description
         """
-        if self._output_path == None:
-            return
 
         # create directory for processed images if not exists
-        os.makedirs(self._output_path, exist_ok=True)
+        os.makedirs(output_path, exist_ok=True)
         
         # write image with modded metadata
         try:
@@ -83,7 +80,7 @@ class Image:
                 et.set_tags(
                     self._img_path,
                     {"ImageDescription": img_metadata["description"]},
-                    ["-o", f'{self._output_path}/{os.path.basename(self._img_path)}']
+                    ["-o", f'{output_path}/{os.path.basename(self._img_path)}']
                 )
         except exiftool.exceptions.ExifToolException:
             raise ImageToolException

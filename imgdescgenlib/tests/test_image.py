@@ -29,8 +29,8 @@ def test_image_metadata_rw():
         img_path = create_temp_image(tempdir)
         new_img_path = os.path.join(tempdir, PROCESSED_IMAGES_DIR, os.path.basename(img_path))
 
-        img = Image(img_path, os.path.join(tempdir, PROCESSED_IMAGES_DIR))
-        img.write_description_metadata(metadata)
+        img = Image(img_path)
+        img.write_description_metadata(metadata, os.path.join(tempdir, PROCESSED_IMAGES_DIR))
 
         new_img = Image(new_img_path)
         tags = new_img.read_metadata()
