@@ -1,4 +1,6 @@
-class ChatbotFailed(Exception):
+from imgdescgenlib.exceptions import ImgDescGenBaseException
+
+class ChatbotFailed(ImgDescGenBaseException):
     pass
 
 class ChatbotHttpRequestFailed(ChatbotFailed):

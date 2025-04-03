@@ -1,2 +1,5 @@
-class ImageToolException(Exception):
+class ImgDescGenBaseException(Exception):
+    pass
+
+class ImageToolException(ImgDescGenBaseException):
     pass
