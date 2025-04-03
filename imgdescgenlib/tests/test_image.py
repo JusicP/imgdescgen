@@ -17,7 +17,7 @@ def create_temp_image(directory: str) -> str:
     return temp_img_path
 
 def test_image_metadata_rw():
-    with tempfile.TemporaryDirectory() as tempdir:
+    with tempfile.TemporaryDirectory(ignore_cleanup_errors=True) as tempdir:
         metadata = {
             "description": "test description",
             "keywords": [
@@ -38,7 +38,7 @@ def test_image_metadata_rw():
         assert tags[0]["EXIF:ImageDescription"] == metadata["description"]
 
 def test_image_reduce_quality():
-    with tempfile.TemporaryDirectory() as tempdir:
+    with tempfile.TemporaryDirectory(ignore_cleanup_errors=True) as tempdir:
         img_path = create_temp_image(tempdir)
         img = Image(img_path)
 

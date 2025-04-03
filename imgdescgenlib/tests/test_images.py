@@ -23,7 +23,7 @@ def test_image_metadata_rw():
     # create 2 images
     img_count = 2
 
-    with tempfile.TemporaryDirectory() as tempdir:
+    with tempfile.TemporaryDirectory(ignore_cleanup_errors=True) as tempdir:
         img_paths = []
         new_imgs_path = []
         metadata = []
@@ -48,7 +48,7 @@ def test_image_metadata_rw_different_directories():
     # create 2 images
     img_count = 2
 
-    with tempfile.TemporaryDirectory() as tempdir:
+    with tempfile.TemporaryDirectory(ignore_cleanup_errors=True) as tempdir:
         img_paths = []
         new_imgs_path = []
         metadata = []

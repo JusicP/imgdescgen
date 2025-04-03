@@ -15,7 +15,7 @@ class Images:
         self._common_dir: str = None
 
         # temp dir for storing metadata.csv with/without images
-        self._tmpdir = tempfile.TemporaryDirectory()
+        self._tmpdir = tempfile.TemporaryDirectory(ignore_cleanup_errors=True)
         self._images: list[Image] = []
 
         self._load(imgs_path)
