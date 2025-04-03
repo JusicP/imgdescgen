@@ -71,6 +71,9 @@ class Image:
         """
         Writes image description
         """
+        if self._output_path == None:
+            return
+
         # create directory for processed images if not exists
         os.makedirs(self._output_path, exist_ok=True)
         
