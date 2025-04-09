@@ -13,6 +13,7 @@ class Images:
 
     def __init__(self, imgs_path: list[str]):
         self._common_dir: str = None
+        self._exiftool_path: str = None
 
         # temp dir for storing metadata.csv with/without images
         self._tmpdir = tempfile.TemporaryDirectory(ignore_cleanup_errors=True)
@@ -45,6 +46,13 @@ class Images:
         for img in self._images:
             img.save(self._tmpdir.name)
 
+    def set_exiftool_path(self, exiftool_path: str):
+        """
+        Sets the path to the ExifTool executable.
+        If None, pyexiftool will search for it in PATH.
+        """
+        self._exiftool_path = exiftool_path
+
     def reduce_quality(self):
         """
         Reduces the quality of all images.
@@ -67,7 +75,7 @@ class Images:
         Reads image metadata
         """
         try:
-            with exiftool.ExifToolHelper() as et:
+            with exiftool.ExifToolHelper(executable=self._exiftool_path) as et:
                 return et.get_tags(
                     [image._img_path for image in self._images],
                     None
@@ -103,7 +111,7 @@ class Images:
                 )
 
         try:
-            with exiftool.ExifToolHelper() as et:
+            with exiftool.ExifToolHelper(executable=self._exiftool_path) as et:
                 et.execute(
                     f'-csv={self._tmpdir.name}/metadata.csv',
                     '-o', output_path,

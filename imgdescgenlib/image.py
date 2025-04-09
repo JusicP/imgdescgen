@@ -13,6 +13,7 @@ class Image:
     """
     
     def __init__(self, img_path: str):
+        self._exiftool_path = None
         self._load(img_path)
 
         self._quality = "keep"
@@ -23,6 +24,13 @@ class Image:
         """
         self._internal_image = PIL.Image.open(img_path)
         self._img_path = img_path
+
+    def set_exiftool_path(self, exiftool_path: str):
+        """
+        Sets the path to the ExifTool executable.
+        If None, pyexiftool will search for it in PATH.
+        """
+        self._exiftool_path = exiftool_path
 
     def reduce_quality(self):
         """
@@ -58,7 +66,7 @@ class Image:
         Reads image metadata
         """
         try:
-            with exiftool.ExifToolHelper() as et:
+            with exiftool.ExifToolHelper(executable=self._exiftool_path) as et:
                 return et.get_tags(
                     self._img_path,
                     None
@@ -76,7 +84,7 @@ class Image:
         
         # write image with modded metadata
         try:
-            with exiftool.ExifToolHelper() as et:
+            with exiftool.ExifToolHelper(executable=self._exiftool_path) as et:
                 et.set_tags(
                     self._img_path,
                     {"ImageDescription": img_metadata["description"]},
