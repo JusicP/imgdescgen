@@ -16,11 +16,5 @@ Writing image metadata relies on [exiftool](https://exiftool.org/) (minimum 12.1
 
 ## How to use
 ```
-api_key = "Your Gemini API key"
-gemini_client = GeminiClient(api_key)
-img_desc_gen = ImgDescGen(gemini_client)
-
-print(img_desc_gen.generate_image_description("path/to/image.jpg"))
+[Example](examples/main.py)
 ```
-
-Images with modified metadata are saved in the processed_images directory.
