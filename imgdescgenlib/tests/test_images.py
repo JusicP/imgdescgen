@@ -3,7 +3,7 @@ import tempfile
 import PIL.Image
 
 from imgdescgenlib.images import Images
-from imgdescgenlib.image import Image
+from imgdescgenlib.schemas import ImageDescription
 
 PROCESSED_IMAGES_DIR = 'processed_images'
 
@@ -32,7 +32,15 @@ def test_image_metadata_rw():
             new_imgs_path.append(os.path.join(tempdir, PROCESSED_IMAGES_DIR, os.path.basename(img_paths[i])))
 
             metadata.append(
-                { "description": f"test_{i}" }
+                ImageDescription.model_validate(
+                    {
+                        "description": f"test_{i}",
+                        "keywords": [
+                            "word 1",
+                            "word 2"
+                        ]
+                    }
+                )
             )
 
         imgs = Images(img_paths)
@@ -42,7 +50,7 @@ def test_image_metadata_rw():
         tags = new_imgs.read_metadata()
 
         for i in range(img_count):
-            assert tags[i]["EXIF:ImageDescription"] == metadata[i]["description"]
+            assert tags[i]["EXIF:ImageDescription"] == metadata[i].description
 
 def test_image_metadata_rw_different_directories():
     # create 2 images
@@ -60,7 +68,15 @@ def test_image_metadata_rw_different_directories():
             new_imgs_path.append(os.path.join(tempdir, PROCESSED_IMAGES_DIR, os.path.basename(img_paths[i])))
 
             metadata.append(
-                { "description": f"test_{i}" }
+                ImageDescription.model_validate(
+                    {
+                        "description": f"test_{i}",
+                        "keywords": [
+                            "word 1",
+                            "word 2"
+                        ]
+                    }
+                )
             )
 
         imgs = Images(img_paths)
@@ -70,4 +86,4 @@ def test_image_metadata_rw_different_directories():
         tags = new_imgs.read_metadata()
 
         for i in range(img_count):
-            assert tags[i]["EXIF:ImageDescription"] == metadata[i]["description"]
+            assert tags[i]["EXIF:ImageDescription"] == metadata[i].description

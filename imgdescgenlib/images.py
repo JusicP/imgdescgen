@@ -5,6 +5,7 @@ import csv
 
 from imgdescgenlib.exceptions import ImageToolException
 from imgdescgenlib.image import Image
+from imgdescgenlib.schemas import ImageDescription
 
 class Images:
     """
@@ -53,6 +54,15 @@ class Images:
         """
         self._exiftool_path = exiftool_path
 
+    def calculate_size(self) -> int:
+        """
+        Calculates the size of all images in bytes.
+        """
+        size = 0
+        for img in self._images:
+            size += img.size()
+        return size
+
     def reduce_quality(self):
         """
         Reduces the quality of all images.
@@ -83,7 +93,7 @@ class Images:
         except exiftool.exceptions.ExifToolException:
             raise ImageToolException
 
-    def write_description_metadata(self, img_metadata: list[dict], output_path: str):
+    def write_description_metadata(self, img_metadata: list[ImageDescription], output_path: str):
         """
         Writes image description
         Notes:
@@ -106,7 +116,7 @@ class Images:
                 writer.writerow(
                     {
                         'SourceFile': self._images[i]._img_path if self._common_dir else f"{self._tmpdir.name}/{os.path.basename(self._images[i]._img_path)}",
-                        'EXIF:ImageDescription': img_metadata[i]['description']
+                        'EXIF:ImageDescription': img_metadata[i].description
                     }
                 )
 
@@ -115,7 +125,6 @@ class Images:
                 et.execute(
                     f'-csv={self._tmpdir.name}/metadata.csv',
                     '-o', output_path,
-                    '-overwrite_original',
                     self._common_dir if self._common_dir else self._tmpdir.name
                 )
         except exiftool.exceptions.ExifToolException:

@@ -3,6 +3,7 @@ import tempfile
 import PIL.Image
 
 from imgdescgenlib.image import Image
+from imgdescgenlib.schemas import ImageDescription
 
 PROCESSED_IMAGES_DIR = 'processed_images'
 
@@ -18,13 +19,15 @@ def create_temp_image(directory: str) -> str:
 
 def test_image_metadata_rw():
     with tempfile.TemporaryDirectory(ignore_cleanup_errors=True) as tempdir:
-        metadata = {
-            "description": "test description",
-            "keywords": [
-                "word 1",
-                "word 2"
-            ]
-        }
+        metadata = ImageDescription.model_validate(
+            {
+                "description": "test description",
+                "keywords": [
+                    "word 1",
+                    "word 2"
+                ]
+            }
+        )
 
         img_path = create_temp_image(tempdir)
         new_img_path = os.path.join(tempdir, PROCESSED_IMAGES_DIR, os.path.basename(img_path))
@@ -35,7 +38,7 @@ def test_image_metadata_rw():
         new_img = Image(new_img_path)
         tags = new_img.read_metadata()
 
-        assert tags[0]["EXIF:ImageDescription"] == metadata["description"]
+        assert tags[0]["EXIF:ImageDescription"] == metadata.description
 
 def test_image_reduce_quality():
     with tempfile.TemporaryDirectory(ignore_cleanup_errors=True) as tempdir:

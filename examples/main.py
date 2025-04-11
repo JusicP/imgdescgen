@@ -14,12 +14,18 @@ def load_json(path: str):
 
 if __name__ == "__main__":
     # not required to have config.json, you can set environment variables instead
-    config = load_json("config.json")
-    if config:
-        client_config = GeminiConfig.model_validate(config)
-    else:
-        client_config = GeminiConfig()
-    client = GeminiClient(client_config)
+    config_data = load_json("config.json")
+    if config_data:
+        config = GeminiConfig.model_validate(config_data)
+
+    client = GeminiClient(config)
+
+    # choose gemini-1.5-flash model if not set in config
+    config = client.get_config()
+    if not config.model_name:
+        models = client.get_available_models()
+        config.model_name = models.get_model_by_name("models/gemini-1.5-flash")
+
     img_desc_gen = ImgDescGen(client)
 
     try:

@@ -6,6 +6,7 @@ import PIL.Image
 from io import BytesIO
 
 from imgdescgenlib.exceptions import ImageToolException
+from imgdescgenlib.schemas import ImageDescription
 
 class Image:
     """
@@ -24,6 +25,12 @@ class Image:
         """
         self._internal_image = PIL.Image.open(img_path)
         self._img_path = img_path
+
+    def get_filename(self) -> str:
+        """
+        Returns image filename
+        """
+        return os.path.basename(self._img_path)
 
     def set_exiftool_path(self, exiftool_path: str):
         """
@@ -44,21 +51,26 @@ class Image:
         """
         self._internal_image.save(f"{path}/{os.path.basename(self._img_path)}", format="JPEG", quality="keep")
 
+    def save_to_buffer(self) -> BytesIO:
+        """
+        Saves image to buffer
+        """
+        buffer = BytesIO()
+        self._internal_image.save(buffer, format="JPEG", quality=self._quality)
+        return buffer
+    
     def size(self):
         """
         Returns the size of an image in bytes 
         """
-        buffer = BytesIO()
-        self._internal_image.save(buffer, format="JPEG", quality=self._quality)
-        return buffer.getbuffer().nbytes
+        return self.save_to_buffer().getbuffer().nbytes
 
     def encode_base64(self):
         """
         Encodes image bytes using base64.
         Returns base64 str.
         """
-        buffer = BytesIO()
-        self._internal_image.save(buffer, format="JPEG")
+        buffer = self.save_to_buffer()
         return base64.b64encode(buffer.getvalue()).decode('utf-8')
 
     def read_metadata(self) -> dict | None:
@@ -74,7 +86,7 @@ class Image:
         except exiftool.exceptions.ExifToolException:
             raise ImageToolException
     
-    def write_description_metadata(self, img_metadata: dict, output_path: str):
+    def write_description_metadata(self, img_metadata: ImageDescription, output_path: str):
         """
         Writes image description
         """
@@ -87,7 +99,7 @@ class Image:
             with exiftool.ExifToolHelper(executable=self._exiftool_path) as et:
                 et.set_tags(
                     self._img_path,
-                    {"ImageDescription": img_metadata["description"]},
+                    {"ImageDescription": img_metadata.description},
                     ["-o", f'{output_path}/{os.path.basename(self._img_path)}']
                 )
         except exiftool.exceptions.ExifToolException:

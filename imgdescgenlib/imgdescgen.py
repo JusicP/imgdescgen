@@ -35,7 +35,7 @@ class ImgDescGen():
         if reduce_quality:
             imgs.reduce_quality()
 
-        img_metadata = self._chatbot.generate_image_description(imgs.encode_base64())
+        img_metadata = self._chatbot.generate_image_description(imgs)
 
         if output_dir:
             imgs.write_description_metadata(img_metadata, output_dir)
