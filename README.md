@@ -15,6 +15,5 @@ python -m pip install .
 Writing image metadata relies on [exiftool](https://exiftool.org/) (minimum 12.15 version), the path to which should be in the PATH environment variable.
 
 ## How to use
-```
 [Example](examples/main.py)
-```
+
