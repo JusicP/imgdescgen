@@ -5,7 +5,7 @@ class GeminiModelName(BaseModel):
     """
     Gemini model name class, used to store model name and display name.
     """
-    name: str # string in format "{baseModelId}-{version}"
+    name: str # string in format "models/{baseModelId}-{version}"
     displayName: str | None = None
 
 class GeminiModel(GeminiModelName):
