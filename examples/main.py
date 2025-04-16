@@ -1,6 +1,6 @@
 import json
 
-from imgdescgenlib.exceptions import ImageToolException
+from imgdescgenlib.exceptions import ImageToolException, ImgDescGenBaseException
 from imgdescgenlib.imgdescgen import ImgDescGen
 from imgdescgenlib.chatbot.gemini.gemini import GeminiClient, GeminiConfig
 from imgdescgenlib.chatbot.exceptions import ChatbotFailed, ChatbotHttpRequestFailed, ChatbotPayloadTooLarge
@@ -29,16 +29,16 @@ if __name__ == "__main__":
     img_desc_gen = ImgDescGen(client)
 
     try:
-        desc = img_desc_gen.generate_image_description(["test.jpg", "test2.jpg"], "processed_images")
+        desc = img_desc_gen.generate_image_description(["=test.jpg", "test2.jpg"], "processed_images")
+        print(f"Generated description: {desc}")
     except ChatbotPayloadTooLarge:
         print("Error: payload too large, try image with smaller size")
     except ChatbotHttpRequestFailed as e:
-        print(f"Error: http request failed with status code {e._status_code}")
-        print(e._text)
-    except ChatbotFailed:
-        print("Error: chatbot failed")
-    except ImageToolException:
-        print("Error: image tool failed")
-
-    print(f"Generated description: {desc}")
+        print(f"Error: {e}")
+    except ChatbotFailed as e:
+        print(f"Error: chatbot failed: {e}")
+    except ImageToolException as e:
+        print(f"Error: image tool failed: {e}")
+    except ImgDescGenBaseException as e:
+        print(f"Error: image description generation failed: {e}")
     

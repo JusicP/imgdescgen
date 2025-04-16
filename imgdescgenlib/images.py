@@ -2,10 +2,13 @@ import os
 import exiftool
 import tempfile
 import csv
+import logging
 
 from imgdescgenlib.exceptions import ImageToolException
 from imgdescgenlib.image import Image
 from imgdescgenlib.schemas import ImageDescription
+
+logger = logging.getLogger("imgdescgenlib")
 
 class Images:
     """
@@ -68,10 +71,14 @@ class Images:
         Reduces the quality of all images.
         """
         for img in self._images:
-            #orig_size = img.size()
-            img.reduce_quality()
-            #reduced_size = img.size()
-            #print(f"Reduce quality: size before {orig_size}, after {reduced_size}")
+            if logger.isEnabledFor(logging.DEBUG):
+                orig_size = img.size()
+                img.reduce_quality()
+                reduced_size = img.size()
+
+                logger.debug(f"Reduce quality for {img.get_filename()}: size before {orig_size}, after {reduced_size}")
+            else:
+                img.reduce_quality()
 
     def encode_base64(self) -> list[str]:
         """
@@ -90,8 +97,12 @@ class Images:
                     [image._img_path for image in self._images],
                     None
                 )
-        except exiftool.exceptions.ExifToolException:
-            raise ImageToolException
+        except FileNotFoundError as e:
+            raise ImageToolException(f"ExifTool not found: {e}")
+        except exiftool.exceptions.ExifToolExecuteException as e:
+            raise ImageToolException(f"ExifTool execution error: {e}")
+        except exiftool.exceptions.ExifToolException as e:
+            raise ImageToolException(f"ExifTool error: {e}")
 
     def write_description_metadata(self, img_metadata: list[ImageDescription], output_path: str):
         """
@@ -101,6 +112,7 @@ class Images:
         """
 
         if self._common_dir == None:
+            logger.debug(f"Images are in different directories, saving them to {self._tmpdir.name}")
             self._save()
 
         # create directory for processed images if not exists
@@ -127,5 +139,9 @@ class Images:
                     '-o', output_path,
                     self._common_dir if self._common_dir else self._tmpdir.name
                 )
-        except exiftool.exceptions.ExifToolException:
-            raise ImageToolException
+        except FileNotFoundError as e:
+            raise ImageToolException(f"ExifTool not found: {e}")
+        except exiftool.exceptions.ExifToolExecuteException as e:
+            raise ImageToolException(f"ExifTool execution error: {e}")
+        except exiftool.exceptions.ExifToolException as e:
+            raise ImageToolException(f"ExifTool error: {e}")

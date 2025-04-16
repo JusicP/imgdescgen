@@ -83,8 +83,12 @@ class Image:
                     self._img_path,
                     None
                 )
-        except exiftool.exceptions.ExifToolException:
-            raise ImageToolException
+        except FileNotFoundError as e:
+            raise ImageToolException(f"ExifTool not found: {e}")
+        except exiftool.exceptions.ExifToolExecuteException as e:
+            raise ImageToolException(f"ExifTool execution error: {e}")
+        except exiftool.exceptions.ExifToolException as e:
+            raise ImageToolException(f"ExifTool error: {e}")
     
     def write_description_metadata(self, img_metadata: ImageDescription, output_path: str):
         """
@@ -102,5 +106,9 @@ class Image:
                     {"ImageDescription": img_metadata.description},
                     ["-o", f'{output_path}/{os.path.basename(self._img_path)}']
                 )
-        except exiftool.exceptions.ExifToolException:
-            raise ImageToolException
+        except FileNotFoundError as e:
+            raise ImageToolException(f"ExifTool not found: {e}")
+        except exiftool.exceptions.ExifToolExecuteException as e:
+            raise ImageToolException(f"ExifTool execution error: {e}")
+        except exiftool.exceptions.ExifToolException as e:
+            raise ImageToolException(f"ExifTool error: {e}")

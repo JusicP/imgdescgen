@@ -60,6 +60,22 @@ class GeminiGenerateContentResponse(BaseModel):
     candidates: list[GeminiCanditate]
     usageMetadata: GeminiUsageMetadata
 
+class GeminiFile(BaseModel):
+    name: str
+    displayName: str
+    mimeType: str
+    sizeBytes: str
+    createTime: str
+    updateTime: str
+    expirationTime: str
+    sha256Hash: str
+    uri: str
+    downloadUri: str | None = None
+
+class GeminiFileListResponse(BaseModel):
+    files: list[GeminiFile] = []
+    nextPageToken: str | None = None
+
 class GeminiConfig(BaseSettings):
     """
     Gemini config class, used to store API key and other settings.
@@ -71,3 +87,5 @@ class GeminiConfig(BaseSettings):
     # TODO: write image schema from GeminiImageDescription
     image_description_prompt: str = 'Write a detailed description and key words of the each image, ' \
                 'with this JSON schema: Image = {"description": str, "keywords": list[str]} Return: list[Image]}.'
+    max_image_count: int = 3600 # https://ai.google.dev/gemini-api/docs/vision?lang=rest#technical-details-image
+    force_upload: bool = False # force uploading images
