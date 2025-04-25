@@ -87,7 +87,7 @@ class Images:
         """
         return [image.encode_base64() for image in self._images]
 
-    def read_metadata(self) -> dict | None:
+    def read_metadata(self) -> list:
         """
         Reads image metadata
         """

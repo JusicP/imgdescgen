@@ -59,13 +59,13 @@ class Image:
         self._internal_image.save(buffer, format="JPEG", quality=self._quality)
         return buffer
     
-    def size(self):
+    def size(self) -> int:
         """
         Returns the size of an image in bytes 
         """
         return self.save_to_buffer().getbuffer().nbytes
 
-    def encode_base64(self):
+    def encode_base64(self) -> str:
         """
         Encodes image bytes using base64.
         Returns base64 str.
@@ -73,7 +73,7 @@ class Image:
         buffer = self.save_to_buffer()
         return base64.b64encode(buffer.getvalue()).decode('utf-8')
 
-    def read_metadata(self) -> dict | None:
+    def read_metadata(self) -> list:
         """
         Reads image metadata
         """
