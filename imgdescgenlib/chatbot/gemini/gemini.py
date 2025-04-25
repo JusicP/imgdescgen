@@ -125,7 +125,7 @@ class GeminiClient(ChatbotClientBase):
 
         return res_json["file"]["uri"]
 
-    def generate_image_description(self, images: Images) -> dict:
+    def generate_image_description(self, images: Images) -> list[ImageDescription]:
         """
         Sends generateContent request to Gemini to generate JSON object that contains image metadata: general description and list of keywords 
         """

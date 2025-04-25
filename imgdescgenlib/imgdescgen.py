@@ -1,5 +1,6 @@
 from imgdescgenlib.chatbot.base import ChatbotBase
 from imgdescgenlib.images import Images
+from imgdescgenlib.schemas import ImageDescription
 
 import os
 
@@ -10,7 +11,7 @@ class ImgDescGen():
     def __init__(self, chatbot: ChatbotBase):
         self._chatbot = chatbot
 
-    def generate_image_description(self, img_paths: list[str], output_dir: str = None, reduce_quality: bool = True, exiftool_path: str = None) -> dict:
+    def generate_image_description(self, img_paths: list[str], output_dir: str = None, reduce_quality: bool = True, exiftool_path: str = None) -> list[ImageDescription]:
         """
         Loads image from file and sends request to the chatbot.
         Then writes metadata to image and dumps it to disk.
