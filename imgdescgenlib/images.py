@@ -119,7 +119,7 @@ class Images:
         os.makedirs(output_path, exist_ok=True)
         
         # create temp csv file with filename and metadata
-        with open(f'{self._tmpdir.name}/metadata.csv', 'w', newline='') as csvfile:
+        with open(f'{self._tmpdir.name}/metadata.csv', 'w', newline='', encoding="utf-8") as csvfile:
             fieldnames = ['SourceFile', 'EXIF:ImageDescription']
             writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
             writer.writeheader()
